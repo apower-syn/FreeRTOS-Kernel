@@ -202,7 +202,7 @@ void vPortEndTask( void )
 /*
  * !!! Note !!!
  * This a trick!!!
- * It's a copy from task.c. We need to konw the definition of TCB for the purpose of hardware
+ * It's a copy from tasks.c. We need to know the definition of TCB for the purpose of hardware
  * stack check. Pls don't forget to update it when FreeRTOS is updated.
  */
     typedef struct tskTaskControlBlock       /* The old naming convention is used to prevent breaking kernel aware debuggers. */
@@ -257,16 +257,19 @@ void vPortEndTask( void )
              * responsible for resulting newlib operation.  User must be familiar with
              * newlib and must provide system-wide implementations of the necessary
              * stubs. Be warned that (at the time of writing) the current newlib design
-             * implements a system-wide malloc() that must be provided with locks. */
+             * implements a system-wide malloc() that must be provided with locks.
+             *
+             * See the third party link http://www.nadler.com/embedded/newlibAndFreeRTOS.html
+             * for additional information. */
             struct  _reent xNewLib_reent;
         #endif
 
         #if ( configUSE_TASK_NOTIFICATIONS == 1 )
-            volatile uint32_t ulNotifiedValue;
-            volatile uint8_t ucNotifyState;
+            volatile uint32_t ulNotifiedValue[ configTASK_NOTIFICATION_ARRAY_ENTRIES ];
+            volatile uint8_t ucNotifyState[ configTASK_NOTIFICATION_ARRAY_ENTRIES ];
         #endif
 
-        /* See the comments above the definition of
+        /* See the comments in FreeRTOS.h with the definition of
          * tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE. */
         #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 !e9029 Macro has been consolidated for readability reasons. */
             uint8_t ucStaticallyAllocated;                     /*< Set to pdTRUE if the task is a statically allocated to ensure no attempt is made to free the memory. */

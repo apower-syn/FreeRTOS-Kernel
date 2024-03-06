@@ -105,21 +105,6 @@
 	POPL	r13
 .endm
 
-.macro SAVE_LP_REGS
-	PUSHL	 r60
-	PUSHAX AUX_LP_START
-	PUSHAX AUX_LP_END
-.endm
-
-.macro RESTORE_LP_REGS
-	POPAX	AUX_LP_END
-	POPAX	AUX_LP_START
-	POPL	r10
-/* must not use the LP_COUNT register(r60) as the destination of multi-cycle instruction */
-	movl	r60, r10
-
-.endm
-
 /* macro to save r0 to r12 */
 .macro SAVE_R0_TO_R12
 	PUSHL	r0
@@ -200,8 +185,6 @@
 	PUSHAX	AUX_ERSTATUS
 	PUSHAX	AUX_ERRET
 
-	SAVE_LP_REGS
-
 	PUSHL	blink
 
 	PUSHL	r11
@@ -250,8 +233,6 @@
 	POPL	r11
 
 	POPL	blink
-
-	RESTORE_LP_REGS
 
 	POPAX	AUX_ERRET
 	POPAX	AUX_ERSTATUS
